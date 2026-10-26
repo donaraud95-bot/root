@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Une question pour toi 💌</title>
+<style>
+:root{--bg:#fff1f5;--card:#fff;--text:#3a1f2b;--accent:#e11d63;--muted:#8a6575;--soft:#f6e6ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c0f15;--card:#2a1620;--text:#fbe8ef;--accent:#ff4d8d;--muted:#c79aad;--soft:#4a2b38}}
+:root[data-theme="dark"]{--bg:#1c0f15;--card:#2a1620;--text:#fbe8ef;--accent:#ff4d8d;--muted:#c79aad;--soft:#4a2b38}
+html,body{min-height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}
+.card{background:var(--card);border-radius:24px;padding:28px 22px;max-width:440px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(225,29,99,.18)}
+.emoji{font-size:56px}h1{font-size:1.45rem;margin:10px 0 8px}p{color:var(--muted);margin:0 0 20px;line-height:1.5}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+button{border:0;border-radius:999px;padding:13px 24px;font-size:1rem;font-weight:600;cursor:pointer;color:var(--text);background:var(--soft)}
+.main{background:var(--accent);color:#fff}
+.opt{flex:1;min-width:130px;border-radius:18px;padding:16px 10px;border:2px solid transparent}
+.opt.on{border-color:var(--accent);background:var(--card)}
+textarea{width:100%;box-sizing:border-box;border-radius:14px;border:1px solid var(--soft);background:var(--bg);color:var(--text);padding:12px;font:inherit;margin:14px 0;resize:vertical}
+.screen{display:none}.screen.show{display:block}
+.link{background:none;font-weight:500;color:var(--muted);margin-top:10px;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="s-ask" class="screen show">
+    <div class="emoji">💌</div>
+    <h1 id="title">Une petite question…</h1>
+    <p>J’aimerais passer un bon moment avec toi. Une sortie, ça te dit ?</p>
+    <div class="row"><button class="main" id="yes">Oui 😍</button><button id="no">Non</button></div>
+  </div>
+
+  <div id="s-yes" class="screen">
+    <div class="emoji">🎉</div>
+    <h1>Yesss !</h1>
+    <p>Tu me rends vraiment heureux. Choisis ce qui te fait envie :</p>
+    <div class="row">
+      <button class="opt" data-v="Balade">🌿<br>Balade</button>
+      <button class="opt" data-v="Sortie plage">🏖️<br>Sortie plage</button>
+    </div>
+    <textarea id="msg-yes" rows="3" placeholder="Un petit mot pour moi ma coco"></textarea>
+    <button>Fais une capture d’écran et envoie 💬</button>
+  </div>
+
+  <div id="s-no" class="screen">
+    <div class="emoji">🤍</div>
+    <h1>Merci d’être sincère</h1>
+    <p>Je respecte ta réponse, et elle compte pour moi. Tu es quelqu’un de précieux, et mon sourire en pensant à toi ne dépend pas d’un oui. Quoi qu’il arrive, je te souhaite tout le bonheur du monde, et notre amitié reste là, intacte. 🤍</p>
+    <br><button class="link" id="back">J’ai changé d’avis 💛</button>
+  </div>
+</div>
+<script>
+var lieu="", $=function(i){return document.getElementById(i)};
+function show(id){["s-ask","s-yes","s-no"].forEach(function(s){$(s).classList.toggle("show",s===id)})}
+function setName(){var n="";try{n=decodeURIComponent(location.hash.slice(1)).replace(/[-_.~]+/g," ").trim()}catch(e){}
+  $("title").textContent=n?n+", veux-tu sortir avec moi ?":"Veux-tu sortir avec moi ?";window.nom=n}
+setName();window.addEventListener("hashchange",setName);
+function wa(t){window.open("https://wa.me/"+NUM+"?text="+encodeURIComponent(t),"_blank")}
+$("yes").onclick=function(){show("s-yes")};
+$("no").onclick=function(){show("s-no")};
+$("back").onclick=function(){show("s-yes")};
+document.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){
+  document.querySelectorAll(".opt").forEach(function(x){x.classList.remove("on")});
+  b.classList.add("on");lieu=b.getAttribute("data-v")}});
+$("send-yes").onclick=function(){
+  if(!lieu){alert("Choisis d’abord Balade ou Sortie plage 😊");return}
+  var t="Oui, avec plaisir ! 😍\nMon choix : "+lieu;
+  if($("msg-yes").value.trim())t+="\nMon petit mot : "+$("msg-yes").value.trim();
+  if(window.nom)t+="\n— "+window.nom;wa(t)};
+$("send-no").onclick=function(){
+  var t="Merci pour ton message, il m’a touchée. Ma réponse est non, mais j’apprécie ta sincérité 🤍";
+  if($("msg-no").value.trim())t+="\n"+$("msg-no").value.trim();
+  if(window.nom)t+="\n— "+window.nom;wa(t)};
+</script>
+</body>
+</html>
